@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- *  Copyright (c) Nickbing Lao<giscafer@outlook.com>. All rights reserved.
+ *  Copyright (c) Nicky<giscafer@outlook.com>. All rights reserved.
  *  Licensed under the BSD-3-Clause License.
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
@@ -7,6 +7,8 @@
 import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
+import { ForexProvider } from './explorer/forexProvider';
+import { ForexService } from './explorer/forexService';
 import { FundProvider } from './explorer/fundProvider';
 import FundService from './explorer/fundService';
 import { NewsProvider } from './explorer/newsProvider';
@@ -14,20 +16,20 @@ import { StockProvider } from './explorer/stockProvider';
 import StockService from './explorer/stockService';
 import globalState from './globalState';
 import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
+import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { registerCommandPaletteEvent, registerViewEvent } from './registerCommand';
 import { HolidayHelper } from './shared/holidayHelper';
 import { LeekFundConfig } from './shared/leekConfig';
+import Log from './shared/log';
 import { Telemetry } from './shared/telemetry';
 import { SortType } from './shared/typed';
 import { events, formatDate, isStockTime } from './shared/utils';
-import { StatusBar } from './statusbar/statusBar';
 import { ProfitStatusBar } from './statusbar/Profit';
+import { StatusBar } from './statusbar/statusBar';
 import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { cacheStockPriceData, updateStockPrice } from './webview/setStockPrice';
-import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
-import { ForexService } from './explorer/forexService';
-import { ForexProvider } from './explorer/forexProvider';
+import { startProxyServer } from './webview/proxyService/proxyService';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
@@ -135,7 +137,7 @@ export function activate(context: ExtensionContext) {
         manualRequest();
       }
     } else {
-      console.log('StockMarket Closed! Polling closed!');
+      Log.info('StockMarket Closed! Polling closed!');
       // 闭市时增加轮询间隔时长
       if (intervalTime === intervalTimeConfig) {
         intervalTime = intervalTimeConfig * 100;
@@ -185,8 +187,9 @@ export function activate(context: ExtensionContext) {
 
   setIntervalTime();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    console.log('🐥>>>Configuration changed', e);
+    Log.info('Configuration changed');
     intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval');
     setIntervalTime();
     setGlobalVariable();
@@ -216,6 +219,9 @@ export function activate(context: ExtensionContext) {
 
   // register command
   registerCommandPaletteEvent(context, statusBar);
+
+  // start local proxy server
+  startProxyServer();
 
   // Telemetry Event
   telemetry.sendEvent('activate');
@@ -285,7 +291,7 @@ function setGlobalVariable() {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-  console.log('🐥deactivate');
+  Log.info('deactivate');
   FlashNewsDaemon.KillAllServer();
   profitBar?.destroy();
   if (loopTimer) {

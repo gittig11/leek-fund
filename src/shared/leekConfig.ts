@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- *  Copyright (c) Nickbing Lao<giscafer@outlook.com>. All rights reserved.
+ *  Copyright (c) Nicky<giscafer@outlook.com>. All rights reserved.
  *  Licensed under the MIT License.
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
@@ -7,6 +7,7 @@
 import { window, workspace } from 'vscode';
 import globalState from '../globalState';
 import { clean, uniq, events } from './utils';
+import { compact, flattenDeep } from 'lodash';
 
 export class BaseConfig {
   static getConfig(key: string, defaultValue?: any): any {
@@ -21,19 +22,20 @@ export class BaseConfig {
     return config.update(cfgKey, cfgValue, true);
   }
 
-  static updateConfig(cfgKey: string, codes: Array<any>) {
+  static async updateConfig(cfgKey: string, codes: Array<string>) {
     const config = workspace.getConfiguration();
-    const updatedCfg = [...config.get(cfgKey, []), ...codes];
-    let newCodes = clean(updatedCfg);
-    newCodes = uniq(newCodes);
-    return config.update(cfgKey, newCodes, true);
+    const origin: string[] = config.get(cfgKey, []);
+    let newCodes = uniq(compact(origin.concat(codes)));
+    console.log(`🚀 ~ BaseConfig ~ updateConfig ~ ${cfgKey}:`, newCodes);
+    await config.update(cfgKey, newCodes, true);
+    return newCodes;
   }
 
   static removeConfig(cfgKey: string, code: string) {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get(cfgKey, []);
     const newCfg = sourceCfg.filter((item) => item !== code);
-    if(sourceCfg.length === newCfg.length){
+    if (sourceCfg.length === newCfg.length) {
       window.showInformationMessage(`删除期货不成功。请 [点击此处](https://github.com/LeekHub/leek-fund/issues/281) 查看期货相关问题`);
     }
     return config.update(cfgKey, newCfg, true);
@@ -190,6 +192,20 @@ export class LeekFundConfig extends BaseConfig {
     } else {
       removeStockGroup();
     }
+  }
+
+  static updateStockCfg(list: string, cb?: Function) {
+    const cfgKey = 'leek-fund.stocks';
+    const config = workspace.getConfiguration();
+    const origin: string[] = config.get(cfgKey, []);
+    let codes = typeof list === 'string' ? list.split(',') : list;
+    let newCodes = uniq(compact(flattenDeep(origin).concat(codes)));
+    config.update(cfgKey, newCodes, true).then(() => {
+      window.showInformationMessage(`Stock Successfully add.`);
+      if (cb && typeof cb === 'function') {
+        cb(codes, newCodes);
+      }
+    })
   }
 
   static addStockCfg(groupId: string, codes: string, cb?: Function) {

@@ -2,21 +2,67 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [3.10.2](https://github.com/LeekHub/leek-fund/compare/v3.10.1...v3.10.2) (2024-08-28)
-
-
-### Bug Fixes
-
-* [#459](https://github.com/LeekHub/leek-fund/issues/459) 修复分组升级无法使用问题 ([4c975f2](https://github.com/LeekHub/leek-fund/commit/4c975f2eab5cec5d6d5a22f4b3a702406e3237ab))
-
-### [3.10.1](https://github.com/LeekHub/leek-fund/compare/v3.10.0...v3.10.1) (2024-08-28)
-
-## [3.10.0](https://github.com/LeekHub/leek-fund/compare/v3.9.2...v3.10.0) (2024-08-27)
+## [3.13.0](https://github.com/LeekHub/leek-fund/compare/v3.12.1...v3.13.0) (2024-10-22)
 
 
 ### Features
 
-* 新增股票分组功能 ([3afd173](https://github.com/LeekHub/leek-fund/commit/3afd173a9478467d0251dc56c916b7e2ea8da6ab))
+* add biance sort ([e7f9fd3](https://github.com/LeekHub/leek-fund/commit/e7f9fd31d0d1af6e7d9982cd10d64ea197207cbf))
+* add biance trend ([e8cd3e7](https://github.com/LeekHub/leek-fund/commit/e8cd3e72aa16aa1ae1b9094ac20db8d7fa9926bc))
+
+### [3.12.1](https://github.com/LeekHub/leek-fund/compare/v3.12.0...v3.12.1) (2024-10-14)
+
+
+### Bug Fixes
+
+* 修正腾讯自选股港股接口数据延迟问题 ([45acd46](https://github.com/LeekHub/leek-fund/commit/45acd46b4ca8f8885d284448dbee06383313f215))
+
+## [3.12.0](https://github.com/LeekHub/leek-fund/compare/v3.11.6...v3.12.0) (2024-10-13)
+
+
+### Features
+
+* 更换搜索接口为腾讯自选股wap ([19a8c1d](https://github.com/LeekHub/leek-fund/commit/19a8c1d19353ca64157833841671a4a489ff7009))
+
+
+### Bug Fixes
+
+* 多余hk的数据 ([bbd7300](https://github.com/LeekHub/leek-fund/commit/bbd7300db5138ba903001ef905461d140f7fc572))
+* 替换雪球源为腾讯自选股 ([0dcd520](https://github.com/LeekHub/leek-fund/commit/0dcd52048855b0e21b80ac3043255bd35fc0daeb))
+
+### [3.11.6](https://github.com/LeekHub/leek-fund/compare/v3.11.5...v3.11.6) (2024-09-15)
+
+* 雪球搜索股票bug ([fc32583](https://github.com/LeekHub/leek-fund/commit/fc32583b370dd426797194c43191ecb1a36f3cdc)), closes [#454](https://github.com/LeekHub/leek-fund/issues/454)
+
+### [3.11.5](https://github.com/LeekHub/leek-fund/compare/v3.11.4...v3.11.5) (2024-09-05)
+
+
+### Bug Fixes
+
+*  Argument of type 'Falsey[]' is not assignable to parameter of type 'string[] ([cdf00da](https://github.com/LeekHub/leek-fund/commit/cdf00da67e1405084762952f4534b11d94923724))
+
+### [3.11.4](https://github.com/LeekHub/leek-fund/compare/v3.11.3...v3.11.4) (2024-09-05)
+
+### [3.11.3](https://github.com/LeekHub/leek-fund/compare/v3.11.2...v3.11.3) (2024-09-04)
+
+
+### Bug Fixes
+
+* 修复版本判断错误问题 ([c51f947](https://github.com/LeekHub/leek-fund/commit/c51f9474615e475662818ad83c9d79333aad119a))
+
+### [3.11.2](https://github.com/LeekHub/leek-fund/compare/v3.11.1...v3.11.2) (2024-09-04)
+
+
+### Bug Fixes
+
+* 临时解决token问题 ([f8745c2](https://github.com/LeekHub/leek-fund/commit/f8745c2ed3846a2fce168ced95e9aaf09ae8ef9b))
+
+### [3.11.1](https://github.com/LeekHub/leek-fund/compare/v3.9.2...v3.11.1) (2024-09-04)
+
+
+### Bug Fixes
+
+* lodash type compile error ([2b772df](https://github.com/LeekHub/leek-fund/commit/2b772df168c810f08757a0d0d3092c0ec328e648))
 
 ### [3.9.2](https://github.com/LeekHub/leek-fund/compare/v3.9.1...v3.9.2) (2024-07-14)
 
@@ -29,7 +75,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 ### Bug Fixes
-
 * Consider upgrade engines.vscode or use an older @types/vscode version ([0829649](https://github.com/LeekHub/leek-fund/commit/082964974104d5a4c3ce9a860003ec0cdb388274))
 
 ## [3.9.0](https://github.com/LeekHub/leek-fund/compare/v3.8.0...v3.9.0) (2024-05-25)

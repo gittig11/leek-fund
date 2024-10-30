@@ -31,6 +31,7 @@ import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
 import tucaoForum from './webview/tucaoForum';
 import { StatusBar } from './statusbar/statusBar';
+import binanceTrend from './webview/binanceTrend';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -386,6 +387,18 @@ export function registerViewEvent(
       binanceProvider?.refresh();
     });
   });
+
+  /* 排序 */
+  commands.registerCommand('leek-fund.binanceSort', () => {
+    binanceProvider.changeOrder();
+  });
+
+  /* 点击交易对 */
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.binanceItemClick', (code, name) =>
+      binanceTrend(name)
+    )
+  );
 
   /**
    * Forex command

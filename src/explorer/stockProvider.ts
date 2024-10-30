@@ -1,4 +1,5 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
+// import { compact, flattenDeep, uniq } from 'lodash';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { defaultFundInfo, SortType, StockCategory } from '../shared/typed';
