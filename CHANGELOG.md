@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.15.0](https://github.com/LeekHub/leek-fund/compare/v3.14.2...v3.15.0) (2025-06-08)
+
+
+### Features
+
+* 资金流向大屏 ([3d0b046](https://github.com/LeekHub/leek-fund/commit/3d0b046eb1dd21db56881db428c5cbb7209a019d))
+
+
+### Bug Fixes
+
+* 地域板块资金流向大屏iframe style ([d7bb749](https://github.com/LeekHub/leek-fund/commit/d7bb74968126daadf414dc886ddb3abd0622c1f3))
+
+### [3.14.2](https://github.com/LeekHub/leek-fund/compare/v3.14.1...v3.14.2) (2025-04-10)
+
+
+### Bug Fixes
+
+* close [#512](https://github.com/LeekHub/leek-fund/issues/512) close[#519](https://github.com/LeekHub/leek-fund/issues/519) ([893634f](https://github.com/LeekHub/leek-fund/commit/893634fa05c3b8bfcc23dfd4921f0f07e859cdd9))
+* https://github.com/LeekHub/leek-fund/pull/432#issuecomment-2771199364 ([983b5ab](https://github.com/LeekHub/leek-fund/commit/983b5abc5146d0eb19a6eca24edc393ebaa7b7cb)), closes [/github.com/LeekHub/leek-fund/pull/432#issuecomment-2771199364](https://github.com/LeekHub//github.com/LeekHub/leek-fund/pull/432/issues/issuecomment-2771199364)
+* update onProxyReq function signature in proxyService.ts ([427cf1d](https://github.com/LeekHub/leek-fund/commit/427cf1d72bd1539f58f7243b238c7f89df54d2a9))
+
+### [3.14.1](https://github.com/LeekHub/leek-fund/compare/v3.14.0...v3.14.1) (2025-01-29)
+
+## [3.14.0](https://github.com/LeekHub/leek-fund/compare/v3.13.0...v3.14.0) (2025-01-29)
+
+
+### Features
+
+* 涨跌停盯盘 ([f06bc32](https://github.com/LeekHub/leek-fund/commit/f06bc321b47cafa1b653c136b3405e51c9749ff1))
+
+
+### Bug Fixes
+
+* 修复港股美股的股票收益统计显示 ([e231cf2](https://github.com/LeekHub/leek-fund/commit/e231cf2303e9737d92ca9b3b9c54172c7878186d))
+* 格式化 ([caef0d4](https://github.com/LeekHub/leek-fund/commit/caef0d406e44efba0c40bcbcec510f13d21b68cf))
+* 美股港股收益的汇率转换 ([a7eb289](https://github.com/LeekHub/leek-fund/commit/a7eb289fad6733f4bc32581ad3a679ceb64ca2ad))
+
 ## [3.13.0](https://github.com/LeekHub/leek-fund/compare/v3.12.1...v3.13.0) (2024-10-22)
 
 

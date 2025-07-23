@@ -1,6 +1,7 @@
 import { ExtensionContext } from 'vscode';
 import { DEFAULT_LABEL_FORMAT } from './shared/constant';
 import { Telemetry } from './shared/telemetry';
+import { ForexData } from './shared/typed';
 
 const deviceId = Math.random().toString(16).substr(2) + Math.random().toString(32).substr(2);
 
@@ -43,6 +44,8 @@ let stockLists: Array<Array<string>> = [];
 
 let stockPrice = {}; // 缓存数据
 let stockPriceCacheDate = '2020-10-30';
+
+let forexList: Array<ForexData> = []; // 外汇信息
 export default {
   context,
   telemetry,
@@ -79,4 +82,6 @@ export default {
   stockPriceCacheDate,
 
   stockHeldTipShow,
+
+  forexList
 };
