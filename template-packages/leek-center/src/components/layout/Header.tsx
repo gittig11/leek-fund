@@ -1,7 +1,7 @@
 import { Layout, Menu } from 'antd';
 import Styles from './Header.module.less';
 import { useHistory } from 'react-router-dom';
-import { MenuInfo } from 'rc-menu/lib/interface';
+// import { MenuInfo } from 'rc-menu/lib/interface';
 import { useEffect, useState } from 'react';
 const { Header } = Layout;
 const { SubMenu } = Menu;
@@ -19,7 +19,7 @@ export default function LHeader() {
 
   console.log('defaultSelectedKeys: ', defaultSelectedKeys);
 
-  function handleClick(e: MenuInfo) {
+  function handleClick(e: any) {
     setDefaultSelectedKeys(e.key.toString());
     history.replace(e.key.toString());
   }

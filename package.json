@@ -775,7 +775,6 @@
   "scripts": {
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
-    "postcompile": "yarn --cwd ./template-packages/leek-center run build",
     "lint": "eslint src --fix --ext ts  --ignore-path .gitignore",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run lint && yarn run compile",
