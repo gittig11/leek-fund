@@ -81,10 +81,14 @@ export function activate(context: ExtensionContext) {
   // create fund & stock side views
   fundTreeView = window.createTreeView('leekFundView.fund', {
     treeDataProvider: nodeFundProvider,
+    dragAndDropController: nodeFundProvider,
+    canSelectMany: true,
   });
 
   stockTreeView = window.createTreeView('leekFundView.stock', {
     treeDataProvider: nodeStockProvider,
+    dragAndDropController: nodeStockProvider,
+    canSelectMany: true,
   });
 
   binanceTreeView = window.createTreeView('leekFundView.binance', {

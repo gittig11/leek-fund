@@ -1,4 +1,13 @@
-import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import {
+  DataTransfer,
+  DataTransferItem,
+  Event,
+  EventEmitter,
+  TreeDataProvider,
+  TreeDragAndDropController,
+  TreeItem,
+  TreeItemCollapsibleState,
+} from 'vscode';
 // import { compact, flattenDeep, uniq } from 'lodash';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
@@ -6,7 +15,13 @@ import { defaultFundInfo, SortType, StockCategory } from '../shared/typed';
 import { LeekFundConfig } from '../shared/leekConfig';
 import StockService from './stockService';
 
-export class StockProvider implements TreeDataProvider<LeekTreeItem> {
+export class StockProvider
+  implements TreeDataProvider<LeekTreeItem>, TreeDragAndDropController<LeekTreeItem> {
+  static readonly GROUP_MIME_TYPE = 'application/vnd.code.tree.leekfundview.stock.groups';
+
+  readonly dragMimeTypes: string[] = [StockProvider.GROUP_MIME_TYPE];
+  readonly dropMimeTypes: string[] = [StockProvider.GROUP_MIME_TYPE];
+
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
 
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
@@ -31,6 +46,51 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
 
   refresh(): any {
     this._onDidChangeTreeData.fire(undefined);
+  }
+
+  handleDrag(source: LeekTreeItem[], dataTransfer: DataTransfer): void {
+    const groupNodes = source.filter((item) => item?.isCategory);
+    if (!groupNodes.length) {
+      return;
+    }
+    dataTransfer.set(StockProvider.GROUP_MIME_TYPE, new DataTransferItem(groupNodes));
+  }
+
+  handleDrop(target: LeekTreeItem | undefined, dataTransfer: DataTransfer): void {
+    const transferItem = dataTransfer.get(StockProvider.GROUP_MIME_TYPE);
+    if (!transferItem) {
+      return;
+    }
+    const groupNodes = (transferItem.value || []) as Array<LeekTreeItem>;
+    const sourceNode = groupNodes.find((item) => item?.isCategory);
+    if (!sourceNode) {
+      return;
+    }
+    const fromIndex = parseInt((sourceNode.id || '').replace('stockGroup_', ''));
+    if (isNaN(fromIndex) || fromIndex < 0 || fromIndex >= globalState.stockGroups.length) {
+      return;
+    }
+    let insertIndex = globalState.stockGroups.length - 1;
+    if (target) {
+      if (!target.isCategory) {
+        return;
+      }
+      const targetIndex = parseInt((target.id || '').replace('stockGroup_', ''));
+      if (isNaN(targetIndex)) {
+        return;
+      }
+      insertIndex = fromIndex < targetIndex ? targetIndex - 1 : targetIndex;
+    }
+    if (insertIndex === fromIndex) {
+      return;
+    }
+    const [group] = globalState.stockGroups.splice(fromIndex, 1);
+    const [stockCodes] = globalState.stockLists.splice(fromIndex, 1);
+    globalState.stockGroups.splice(insertIndex, 0, group);
+    globalState.stockLists.splice(insertIndex, 0, stockCodes);
+    LeekFundConfig.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+    LeekFundConfig.setConfig('leek-fund.stocks', globalState.stockLists);
+    this.refresh();
   }
 
   getChildren(element?: LeekTreeItem | undefined): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
