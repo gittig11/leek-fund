@@ -1,5 +1,68 @@
 ## 开发
 
+## 2026-11-15 feat: 完善当前项目代码，支持拖拽移动子目录
+
+### 设计要点
+
+- 为 `StockProvider` / `FundProvider` 实现 `TreeDragAndDropController<LeekTreeItem>`，只允许拖拽**分组节点**（`isCategory === true`）
+- 用自定义 mime（`application/vnd.code.tree.leekfundview.stock.groups`）在 `handleDrag` 中携带被拖拽的分组节点，`handleDrop` 中读取
+- 落点语义：拖到某个分组上 → 插入到该分组之前；拖到空白处 → 移到末尾
+- 重新排序时对 `globalState.stockGroups` 与 `globalState.stockLists` 成对 `splice`（两个数组必须保持同下标一一对应），再通过 `LeekFundConfig.setConfig` 持久化并 `refresh()`
+
+
+### 改动说明
+
+#### 1. [stockProvider.ts](file:///d:/dev/os-projects/leek-fund/src/explorer/stockProvider.ts)
+
+`StockProvider` 现在同时实现 `TreeDataProvider` 与 `TreeDragAndDropController<LeekTreeItem>`：
+
+- **MIME 类型**：`application/vnd.code.tree.leekfundview.stock.groups`，用于在本树内部传递被拖拽的分组节点。`dragMimeTypes` / `dropMimeTypes` 都声明它。
+- **`handleDrag`**：只把 `isCategory === true` 的分组节点写入 `dataTransfer`。这样拖拽普通股票条目时不会携带任何数据，`handleDrop` 自然不会执行移动，避免误操作。
+- **`handleDrop`**：核心排序逻辑
+  1. 从 `dataTransfer` 取出源节点，解析 `id`（`stockGroup_<index>`）得到 `fromIndex`，并做越界校验
+  2. 计算插入位：拖到某个分组上 → 插到该分组**之前**；拖到列表空白处（`target === undefined`）→ 移到**末尾**
+  3. 关键的一步是 `fromIndex < targetIndex` 时目标下标要 **-1**：因为源元素先从数组里被移除，后面的元素整体前移了一位
+  4. `globalState.stockGroups` 与 `globalState.stockLists` **成对** `splice`（先各删一个、再各插一个），保证"分组名 ↔ 股票代码数组"下标始终一一对应——这是本项目数据结构最容易踩坑的地方
+  5. 通过 `LeekFundConfig.setConfig` 写入 `leek-fund.stockGroups` / `leek-fund.stocks` 持久化，最后 `refresh()`
+
+#### 2. [fundProvider.ts](file:///d:/dev/os-projects/leek-fund/src/explorer/fundProvider.ts)
+
+与股票完全同构，只是数据换成 `globalState.fundGroups` / `globalState.fundLists`，配置键换成 `leek-fund.fundGroups` / `leek-fund.funds`，ID 前缀换成 `fundGroup_`，MIME 独立为 `...fund.groups`，避免两个视图互相干扰。
+
+#### 3. [extension.ts](file:///d:/dev/os-projects/leek-fund/src/extension.ts#L84-L95)
+
+在 `window.createTreeView` 时挂上 `dragAndDropController: nodeXxxProvider`。注意这里**故意没有开启 `canSelectMany`**：多选拖拽在"排序"语义下容易产生歧义（多个源节点如何相对定位），保持单选拖拽更符合直觉。
+
+### 行为边界
+
+| 场景 | 结果 |
+|---|---|
+| A 拖到 B 上 | A 插入到 B 之前 |
+| A 拖到根空白区 | A 移到末尾 |
+| 拖到自身/相邻下一位 | `insertIndex === fromIndex`，直接 return，无副作用 |
+| 只有一个分组 | 拖到空白 → 位置不变，直接 return |
+| 拖拽普通股票/基金条目 | `handleDrag` 不写数据，`handleDrop` 取不到数据，直接 return |
+
+### 验证方式
+
+```bash
+cd /d d:\dev\os-projects\leek-fund
+npm run compile
+```
+
+然后 F5 启动调试实例，在侧边栏拖动 `US(4)`、`HK(15)`、`医药(33)` 等分组，松手后顺序应立即变化，并可在 `settings.json` 的 `leek-fund.stockGroups` 里看到顺序被持久化。
+
+### 一点延伸提示
+
+分组 ID 是**按数组下标生成**的（`stockGroup_0`、`stockGroup_1`…），所以重排后所有分组的 ID 都会变。这带来两个副作用：
+
+- 分组的展开/折叠状态会重置（VS Code 用 `id` 记忆折叠状态）
+- `FundService` 里按 groupIndex 缓存盈亏的 `amountRefreshCount` / `fundCodesSet` 会被打乱，但下一轮轮询会重新拉取，不影响数据正确性
+
+如果后续想避免折叠状态丢失，可以把 ID 从下标改为稳定标识（比如分组名或 UUID），但那需要一并改造 `LeekFundConfig` 里所有 `parseInt(groupId.replace(...))` 的解析逻辑，属于一次较大的重构，建议作为独立需求评估。
+
+
+
 ## 接口说明
 
 > 需要学习开发的可以了解
