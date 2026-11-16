@@ -23,7 +23,7 @@
   "publisher": "giscafer",
   "icon": "resources/logo.png",
   "engines": {
-    "vscode": "^1.59.0"
+    "vscode": "^1.146.0"
   },
   "enableProposedAPI": true,
   "categories": [
@@ -807,9 +807,10 @@
     "@commitlint/config-conventional": "^11.0.0",
     "@types/glob": "^7.1.1",
     "@types/lodash": "4.17.5",
+    "@types/minimatch": "^5.1.2",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
-    "@types/vscode": "1.59.0",
+    "@types/vscode": "1.146.0",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
